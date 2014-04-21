@@ -1,7 +1,7 @@
 var fs = require('fs');
 
-var file1 = 'linked1.csv';
-var file2 = 'linked2.csv';
+var file1 = 'first.csv';
+var file2 = 'second.csv';
 
 console.log(" ");
 console.log("CSV Comparer");
