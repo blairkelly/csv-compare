@@ -6,23 +6,54 @@ var file2 = 'second.csv';
 console.log(" ");
 console.log("CSV Comparer");
 
+var testfor = function (arr, piecesToMatch) {
+	var matcher = -1;
+	arr.forEach(function (arrItem, i) {
+		var matched = 0;
+		var arrItemLowerCase = arrItem.toLowerCase().replace('-', '');
+		piecesToMatch.forEach(function (ptm) {
+			ptm = ptm.toLowerCase();
+			if (arrItemLowerCase.indexOf(ptm) > -1) {
+				matched++;
+			}
+		});
+		if (matcher < 0 && matched == piecesToMatch.length) {
+			matcher = i;
+		}
+	});
+	return matcher;
+}
+
+var locs = function (arr) {
+	return {
+		fn: testfor(arr, ['first', 'name']),
+		ln: testfor(arr, ['last', 'name']),
+		em: testfor(arr, ['email']),
+	}
+}
 
 function compare_csvs(csv1, csv2) {
 	console.log(' ');
 	console.log(' ');
 	console.log('Comparing CSVs: ');
 
+	var datmap1 = csv1[0];
+	var datmap2 = csv2[0];
+	
+	var dm1locs = locs(datmap1);
+	var dm2locs = locs(datmap2);
+
 	var discrepancy_count = 0;
-	for(var i=0; i<csv1.length; i++) {
-		var entry_name = csv1[i][1] + ' ' + csv1[i][3];
-		var entry_email = csv1[i][5];
+	for(var i=1; i<csv1.length; i++) {
+		var entry_name = csv1[i][dm1locs.fn] + ' ' + csv1[i][dm1locs.ln];
+		var entry_email = csv1[i][dm1locs.em];
 
 		//console.log(entry_email);
 
 		var found_flag = false;
 		for(var j=0; j<csv2.length; j++) {
-			var compare_name = csv2[j][1] + ' ' + csv2[j][3];
-			var compare_email = csv2[j][5];
+			var compare_name = csv2[j][dm2locs.fn] + ' ' + csv2[j][dm2locs.ln];
+			var compare_email = csv2[j][dm2locs.em];
 
 			if((entry_email == compare_email) || (entry_name == compare_name)) {
 				found_flag = true;
